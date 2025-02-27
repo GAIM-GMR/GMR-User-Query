@@ -7,67 +7,67 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
+
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">GMR Investment Query</h2>
+        <h2 class="text-2xl font-semibold text-center mb-4">GMR Investment Query</h2>
         
-        <!-- Large Text Area for User Query -->
-        <textarea id="userQuery" rows="5" 
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" 
-            placeholder="Enter your query..."></textarea>
-
-        <!-- File Upload Section -->
-        <label class="block mt-4 text-gray-700 font-semibold">Upload Supporting File (PDF/Excel)</label>
-        <input type="file" id="fileUpload" 
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
+        <!-- User Query Input -->
+        <textarea id="userQuery" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" placeholder="Enter your query here..."></textarea>
+        
+        <!-- File Upload -->
+        <div class="mt-4">
+            <label class="font-semibold">Upload Supporting File (PDF/Excel)</label>
+            <input type="file" id="fileUpload" class="w-full p-2 border rounded-md mt-2">
+        </div>
+        
         <!-- Submit Button -->
-        <button onclick="sendToMake()" 
-            class="w-full bg-blue-600 text-white py-2 mt-4 rounded-lg hover:bg-blue-700 transition duration-300">
-            Submit
-        </button>
-
-        <!-- Response Message -->
-        <p id="responseMessage" class="mt-4 text-center text-gray-700"></p>
+        <button onclick="sendToMake()" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Submit</button>
+        
+        <!-- Error/Success Messages -->
+        <p id="responseMessage" class="mt-3 text-center text-red-500 hidden"></p>
     </div>
 
     <script>
         function sendToMake() {
             var query = document.getElementById("userQuery").value;
-            var fileInput = document.getElementById("fileUpload");
+            var fileInput = document.getElementById("fileUpload").files[0];
             var responseMessage = document.getElementById("responseMessage");
 
-            if (!query.trim() && fileInput.files.length === 0) {
-                responseMessage.textContent = "Please enter a query or upload a file.";
-                responseMessage.classList.add("text-red-500");
+            if (!query.trim()) {
+                responseMessage.textContent = "Query cannot be empty!";
+                responseMessage.classList.remove("hidden");
                 return;
             }
 
-            responseMessage.textContent = "Processing...";
-            responseMessage.classList.remove("text-red-500");
-            responseMessage.classList.add("text-blue-500");
-
             var formData = new FormData();
             formData.append("query", query);
-            if (fileInput.files.length > 0) {
-                formData.append("file", fileInput.files[0]); 
+            if (fileInput) {
+                formData.append("file", fileInput);
             }
 
-            fetch("https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
+            fetch("https://cors-anywhere.herokuapp.com/https://hook.eu2.make.com/YOUR_WEBHOOK_ID", {
                 method: "POST",
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to submit query");
+                return response.json();
+            })
             .then(data => {
                 responseMessage.textContent = "Query submitted successfully!";
-                responseMessage.classList.remove("text-blue-500");
+                responseMessage.classList.remove("text-red-500");
                 responseMessage.classList.add("text-green-500");
             })
             .catch(error => {
                 responseMessage.textContent = "Error submitting query.";
-                responseMessage.classList.remove("text-blue-500");
+                responseMessage.classList.remove("text-green-500");
                 responseMessage.classList.add("text-red-500");
+            })
+            .finally(() => {
+                responseMessage.classList.remove("hidden");
             });
         }
     </script>
+
 </body>
 </html>
