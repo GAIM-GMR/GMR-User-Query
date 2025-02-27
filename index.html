@@ -22,8 +22,9 @@
             Submit
         </button>
 
-        <!-- Error Message -->
-        <p id="errorMsg" class="text-red-500 mt-3 text-center" style="display: none;">Error submitting query.</p>
+        <!-- Messages -->
+        <p id="errorMsg" class="text-red-500 mt-3 text-center" style="display: none;"></p>
+        <p id="successMsg" class="text-green-500 mt-3 text-center" style="display: none;">Query submitted successfully!</p>
     </div>
 
     <script>
@@ -31,14 +32,17 @@
             const query = document.getElementById("userQuery").value;
             const fileInput = document.getElementById("fileUpload");
             const errorMsg = document.getElementById("errorMsg");
+            const successMsg = document.getElementById("successMsg");
+
+            // Reset messages
+            errorMsg.style.display = "none";
+            successMsg.style.display = "none";
 
             if (!query.trim() && fileInput.files.length === 0) {
                 errorMsg.innerText = "Please enter a query or upload a file.";
                 errorMsg.style.display = "block";
                 return;
             }
-
-            errorMsg.style.display = "none";  // Hide previous errors
 
             const formData = new FormData();
             formData.append("query", query);
@@ -53,12 +57,15 @@
                     body: formData
                 });
 
-                const text = await response.text();  // Handle non-JSON responses
+                const text = await response.text(); // Ensure we handle non-JSON responses
                 console.log("Server Response:", text);
 
                 if (!response.ok) {
                     throw new Error("Server responded with an error.");
                 }
+
+                successMsg.innerText = "Query submitted successfully!";
+                successMsg.style.display = "block";
 
             } catch (error) {
                 console.error("Fetch error:", error);
@@ -69,3 +76,4 @@
     </script>
 </body>
 </html>
+
