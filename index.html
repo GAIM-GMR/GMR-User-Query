@@ -7,73 +7,71 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-center mb-4">GMR Investment Query</h2>
 
-        <form id="queryForm" class="space-y-4">
-            <!-- Query Input -->
-            <textarea id="userQuery" class="w-full p-3 border rounded-lg resize-none" rows="4" placeholder="Enter your query here..."></textarea>
+        <!-- Query Input -->
+        <textarea id="userQuery" placeholder="Enter your query" 
+            class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" 
+            rows="4"></textarea>
 
-            <!-- File Upload -->
-            <div>
-                <label class="block font-medium mb-1">Upload Supporting File (PDF/Excel)</label>
-                <input type="file" id="fileUpload" class="w-full p-2 border rounded-lg">
-            </div>
+        <!-- File Upload -->
+        <label class="block font-medium mt-4">Upload Supporting File (PDF/Excel)</label>
+        <input type="file" id="fileInput" class="w-full mt-2 p-2 border rounded-lg bg-gray-50">
 
-            <!-- Submit Button -->
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                Submit
-            </button>
+        <!-- Submit Button -->
+        <button onclick="sendToMake()" 
+            class="w-full bg-blue-600 text-white py-2 mt-4 rounded-lg hover:bg-blue-700 transition">
+            Submit
+        </button>
 
-            <!-- Error/Success Message -->
-            <p id="responseMessage" class="text-center text-red-500 mt-2 hidden">Error submitting query.</p>
-        </form>
+        <!-- Status Message -->
+        <p id="statusMessage" class="text-center mt-4 text-red-500 hidden">Error submitting query.</p>
     </div>
 
     <script>
-        document.getElementById("queryForm").addEventListener("submit", function(event) {
-            event.preventDefault();  // Prevent default form submission
+        function sendToMake() {
+            const query = document.getElementById("userQuery").value;
+            const fileInput = document.getElementById("fileInput");
+            const statusMessage = document.getElementById("statusMessage");
+            
+            if (!query) {
+                statusMessage.textContent = "Please enter a query.";
+                statusMessage.classList.remove("hidden");
+                return;
+            }
 
-            var formData = new FormData();
-            var queryText = document.getElementById("userQuery").value;
-            var fileInput = document.getElementById("fileUpload").files[0];
-            var responseMessage = document.getElementById("responseMessage");
-
-            // Append query text
-            formData.append("query", queryText);
-
-            // Append file if uploaded
-            if (fileInput) {
-                formData.append("file", fileInput);
+            const formData = new FormData();
+            formData.append("query", query);
+            
+            if (fileInput.files.length > 0) {
+                formData.append("file", fileInput.files[0]);
             }
 
             fetch("https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
                 method: "POST",
-                mode: "no-cors",
                 body: formData
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error("Network response was not ok");
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(data => {
-                responseMessage.textContent = "Query submitted successfully!";
-                responseMessage.classList.remove("text-red-500");
-                responseMessage.classList.add("text-green-600");
-                responseMessage.classList.remove("hidden");
+                statusMessage.textContent = "Query submitted successfully!";
+                statusMessage.classList.remove("text-red-500");
+                statusMessage.classList.add("text-green-500");
+                statusMessage.classList.remove("hidden");
             })
             .catch(error => {
-                responseMessage.textContent = "Error submitting query.";
-                responseMessage.classList.remove("text-green-600");
-                responseMessage.classList.add("text-red-500");
-                responseMessage.classList.remove("hidden");
-                console.error("Error:", error);
+                statusMessage.textContent = "Error submitting query. Please try again.";
+                statusMessage.classList.remove("text-green-500");
+                statusMessage.classList.add("text-red-500");
+                statusMessage.classList.remove("hidden");
+                console.error('Error:', error);
             });
-        });
+        }
     </script>
-
 </body>
 </html>
