@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMR Investment Query</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('https://raw.githubusercontent.com/GAIM-GMR/GMR-User-Query/refs/heads/main/Pic.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Light overlay to improve text readability */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .button-link {
+            display: block;
+            text-align: center;
+            background-color: #2563EB;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+        .button-link:hover {
+            background-color: #1E40AF;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+<body class="flex items-center justify-center h-screen">
+    <div class="container w-full max-w-lg">
         <h2 class="text-xl font-semibold mb-4 text-center">GMR Investment Query</h2>
         
         <!-- User Query Input -->
@@ -25,6 +51,13 @@
         <!-- Messages -->
         <p id="errorMsg" class="text-red-500 mt-3 text-center" style="display: none;"></p>
         <p id="successMsg" class="text-green-500 mt-3 text-center" style="display: none;">Query submitted successfully!</p>
+
+        <!-- Google Sheet Button -->
+        <a href="https://docs.google.com/spreadsheets/d/12wBgRxrV7qnkHlXgB_a5Qz2fVhynrR94TPzOG-IHzOg/edit?usp=sharing" 
+           target="_blank" 
+           class="button-link">
+            View Query Results
+        </a>
     </div>
 
     <script>
@@ -76,4 +109,3 @@
     </script>
 </body>
 </html>
-
