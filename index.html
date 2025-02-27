@@ -6,46 +6,35 @@
     <title>GMR Investment Query</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Ensure Background Image is Fully Scaled */
         body {
             background: url('https://raw.githubusercontent.com/GAIM-GMR/GMR-User-Query/refs/heads/main/Pic.jpg') no-repeat center center fixed;
-            background-size: cover; /* Ensures full coverage */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            margin: 0;
+            background-size: cover;
         }
-        /* Adjust form container for better visibility */
         .container {
-            background: rgba(255, 255, 255, 0.95); /* Slight transparency for readability */
+            background: rgba(255, 255, 255, 0.9); /* Light overlay to improve text readability */
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            width: 400px;
-            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        /* Google Sheet Button */
         .button-link {
             display: block;
             text-align: center;
             background-color: #2563EB;
             color: white;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 5px;
             font-weight: bold;
             text-decoration: none;
-            margin-top: 12px;
+            margin-top: 10px;
         }
         .button-link:hover {
             background-color: #1E40AF;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h2 class="text-xl font-semibold mb-4">GMR Investment Query</h2>
+<body class="flex items-center justify-center h-screen">
+    <div class="container w-full max-w-lg">
+        <h2 class="text-xl font-semibold mb-4 text-center">GMR Investment Query</h2>
         
         <!-- User Query Input -->
         <textarea id="userQuery" class="w-full p-3 border border-gray-300 rounded-md" rows="4" placeholder="Enter your query"></textarea>
@@ -120,5 +109,4 @@
     </script>
 </body>
 </html>
-
 
