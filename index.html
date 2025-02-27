@@ -6,26 +6,27 @@
     <title>GMR Investment Query</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Background Image Fix */
+        /* Ensure Background Image is Fully Scaled */
         body {
             background: url('https://raw.githubusercontent.com/GAIM-GMR/GMR-User-Query/refs/heads/main/Pic.jpg') no-repeat center center fixed;
-            background-size: cover;
+            background-size: cover; /* Ensures full coverage */
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
             margin: 0;
         }
+        /* Adjust form container for better visibility */
         .container {
-            background: rgba(255, 255, 255, 0.95); /* Light overlay to ensure readability */
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.95); /* Slight transparency for readability */
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            max-width: 450px;
-            width: 100%;
+            width: 400px;
             text-align: center;
         }
+        /* Google Sheet Button */
         .button-link {
             display: block;
             text-align: center;
@@ -119,4 +120,5 @@
     </script>
 </body>
 </html>
+
 
