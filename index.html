@@ -8,69 +8,63 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 class="text-2xl font-semibold text-center mb-4">GMR Investment Query</h2>
-
-        <!-- Query Input -->
-        <textarea id="userQuery" placeholder="Enter your query" 
-            class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" 
-            rows="4"></textarea>
+        <h2 class="text-xl font-semibold mb-4 text-center">GMR Investment Query</h2>
+        
+        <!-- User Query Input -->
+        <textarea id="userQuery" class="w-full p-3 border border-gray-300 rounded-md" rows="4" placeholder="Enter your query"></textarea>
 
         <!-- File Upload -->
-        <label class="block font-medium mt-4">Upload Supporting File (PDF/Excel)</label>
-        <input type="file" id="fileInput" class="w-full mt-2 p-2 border rounded-lg bg-gray-50">
+        <label class="block font-semibold mt-4">Upload Supporting File (PDF/Excel)</label>
+        <input type="file" id="fileUpload" class="w-full p-2 border border-gray-300 rounded-md">
 
         <!-- Submit Button -->
-        <button onclick="sendToMake()" 
-            class="w-full bg-blue-600 text-white py-2 mt-4 rounded-lg hover:bg-blue-700 transition">
+        <button onclick="sendToMake()" class="w-full mt-4 p-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
             Submit
         </button>
 
-        <!-- Status Message -->
-        <p id="statusMessage" class="text-center mt-4 text-red-500 hidden">Error submitting query.</p>
+        <!-- Error Message -->
+        <p id="errorMsg" class="text-red-500 mt-3 text-center" style="display: none;">Error submitting query.</p>
     </div>
 
     <script>
-        function sendToMake() {
+        async function sendToMake() {
             const query = document.getElementById("userQuery").value;
-            const fileInput = document.getElementById("fileInput");
-            const statusMessage = document.getElementById("statusMessage");
-            
-            if (!query) {
-                statusMessage.textContent = "Please enter a query.";
-                statusMessage.classList.remove("hidden");
+            const fileInput = document.getElementById("fileUpload");
+            const errorMsg = document.getElementById("errorMsg");
+
+            if (!query.trim() && fileInput.files.length === 0) {
+                errorMsg.innerText = "Please enter a query or upload a file.";
+                errorMsg.style.display = "block";
                 return;
             }
 
+            errorMsg.style.display = "none";  // Hide previous errors
+
             const formData = new FormData();
             formData.append("query", query);
-            
+
             if (fileInput.files.length > 0) {
                 formData.append("file", fileInput.files[0]);
             }
 
-            fetch("https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
+            try {
+                const response = await fetch("https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const text = await response.text();  // Handle non-JSON responses
+                console.log("Server Response:", text);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error("Server responded with an error.");
                 }
-                return response.json();
-            })
-            .then(data => {
-                statusMessage.textContent = "Query submitted successfully!";
-                statusMessage.classList.remove("text-red-500");
-                statusMessage.classList.add("text-green-500");
-                statusMessage.classList.remove("hidden");
-            })
-            .catch(error => {
-                statusMessage.textContent = "Error submitting query. Please try again.";
-                statusMessage.classList.remove("text-green-500");
-                statusMessage.classList.add("text-red-500");
-                statusMessage.classList.remove("hidden");
-                console.error('Error:', error);
-            });
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                errorMsg.innerText = "Error submitting query.";
+                errorMsg.style.display = "block";
+            }
         }
     </script>
 </body>
