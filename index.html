@@ -10,63 +10,68 @@
 
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 class="text-2xl font-semibold text-center mb-4">GMR Investment Query</h2>
-        
-        <!-- User Query Input -->
-        <textarea id="userQuery" class="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" placeholder="Enter your query here..."></textarea>
-        
-        <!-- File Upload -->
-        <div class="mt-4">
-            <label class="font-semibold">Upload Supporting File (PDF/Excel)</label>
-            <input type="file" id="fileUpload" class="w-full p-2 border rounded-md mt-2">
-        </div>
-        
-        <!-- Submit Button -->
-        <button onclick="sendToMake()" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">Submit</button>
-        
-        <!-- Error/Success Messages -->
-        <p id="responseMessage" class="mt-3 text-center text-red-500 hidden"></p>
+
+        <form id="queryForm" class="space-y-4">
+            <!-- Query Input -->
+            <textarea id="userQuery" class="w-full p-3 border rounded-lg resize-none" rows="4" placeholder="Enter your query here..."></textarea>
+
+            <!-- File Upload -->
+            <div>
+                <label class="block font-medium mb-1">Upload Supporting File (PDF/Excel)</label>
+                <input type="file" id="fileUpload" class="w-full p-2 border rounded-lg">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                Submit
+            </button>
+
+            <!-- Error/Success Message -->
+            <p id="responseMessage" class="text-center text-red-500 mt-2 hidden">Error submitting query.</p>
+        </form>
     </div>
 
     <script>
-        function sendToMake() {
-            var query = document.getElementById("userQuery").value;
+        document.getElementById("queryForm").addEventListener("submit", function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData();
+            var queryText = document.getElementById("userQuery").value;
             var fileInput = document.getElementById("fileUpload").files[0];
             var responseMessage = document.getElementById("responseMessage");
 
-            if (!query.trim()) {
-                responseMessage.textContent = "Query cannot be empty!";
-                responseMessage.classList.remove("hidden");
-                return;
-            }
+            // Append query text
+            formData.append("query", queryText);
 
-            var formData = new FormData();
-            formData.append("query", query);
+            // Append file if uploaded
             if (fileInput) {
                 formData.append("file", fileInput);
             }
 
-            fetch("https://cors-anywhere.herokuapp.com/https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
+            fetch("https://hook.eu2.make.com/9x4p1v9gkjrn2sbte6r8fvtjqgb9q4tr", {
                 method: "POST",
-                body: formData
+                body: formData  // Sending multipart/form-data
             })
             .then(response => {
-                if (!response.ok) throw new Error("Failed to submit query");
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
                 return response.json();
             })
             .then(data => {
                 responseMessage.textContent = "Query submitted successfully!";
                 responseMessage.classList.remove("text-red-500");
-                responseMessage.classList.add("text-green-500");
+                responseMessage.classList.add("text-green-600");
+                responseMessage.classList.remove("hidden");
             })
             .catch(error => {
                 responseMessage.textContent = "Error submitting query.";
-                responseMessage.classList.remove("text-green-500");
+                responseMessage.classList.remove("text-green-600");
                 responseMessage.classList.add("text-red-500");
-            })
-            .finally(() => {
                 responseMessage.classList.remove("hidden");
+                console.error("Error:", error);
             });
-        }
+        });
     </script>
 
 </body>
